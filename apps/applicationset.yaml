@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: gitops-monitor
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - env: dev
+            server: https://kubernetes.default.svc
+            syncPolicy: automated
+          - env: staging
+            server: https://192.168.49.3:8443
+            syncPolicy: automated
+          - env: prod
+            server: https://192.168.49.4:8443
+            syncPolicy: manual
+  template:
+    metadata:
+      name: "gitops-monitor-{{env}}"
+      annotations:
+        notifications.argoproj.io/subscribe.on-deployed.slack: "#배포-알림"
+        notifications.argoproj.io/subscribe.on-sync-failed.slack: "#배포-알림"
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/caminobelllo/tech-seminar-gitops
+        targetRevision: HEAD
+        path: manifests/{{env}}
+      destination:
+        server: "{{server}}"
+        namespace: gitops-monitor
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true     # ← Auto Rollback 핵심
+        syncOptions:
+          - CreateNamespace=true
