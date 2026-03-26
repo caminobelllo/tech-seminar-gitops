@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gitops-monitor
+  namespace: gitops-monitor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gitops-monitor
+  template:
+    metadata:
+      labels:
+        app: gitops-monitor
+    spec:
+      containers:
+        - name: gitops-monitor
+          image: <AWS_ACCOUNT_ID>.dkr.ecr.ap-northeast-2.amazonaws.com/gitops-monitor:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: APP_ENV
+              value: "dev"
+            - name: APP_VERSION
+              value: "v1"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gitops-monitor
+  namespace: gitops-monitor
+spec:
+  selector:
+    app: gitops-monitor
+  ports:
+    - port: 80
+      targetPort: 3000
