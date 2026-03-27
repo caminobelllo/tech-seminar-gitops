@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: gitops-monitor
-          image: <AWS_ACCOUNT_ID>.dkr.ecr.ap-northeast-2.amazonaws.com/gitops-monitor:latest
+          image: 591339350297.dkr.ecr.ap-northeast-2.amazonaws.com/gitops-monitor:latest
           ports:
             - containerPort: 3000
           env:
