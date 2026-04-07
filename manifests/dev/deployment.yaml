@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: gitops-monitor
-          image: 591339350297.dkr.ecr.ap-northeast-2.amazonaws.com/gitops-monitor:sha-aec300ae599ed479cdffc042f8cf0c7531f0727e
+          image: 591339350297.dkr.ecr.ap-northeast-2.amazonaws.com/gitops-monitor:sha-fca62021417e9753ba5150a53a506d717aad20dd
           ports:
             - containerPort: 3000
           env:
