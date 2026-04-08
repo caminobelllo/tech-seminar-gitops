@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: gitops-monitor-manual
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - env: prod
+            server: https://192.168.49.4:8443
+  template:
+    metadata:
+      name: "gitops-monitor-{{env}}"
+      annotations:
+        notifications.argoproj.io/subscribe.on-deployed.slack: "#배포-알림"
+        notifications.argoproj.io/subscribe.on-sync-failed.slack: "#배포-알림"
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/caminobelllo/tech-seminar-gitops
+        targetRevision: HEAD
+        path: manifests/{{env}}
+      destination:
+        server: "{{server}}"
+        namespace: gitops-monitor
+      syncPolicy:
+        syncOptions:
+          - CreateNamespace=true

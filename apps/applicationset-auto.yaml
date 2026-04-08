@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: gitops-monitor
+  name: gitops-monitor-auto
   namespace: argocd
 spec:
   generators:
@@ -9,13 +9,8 @@ spec:
         elements:
           - env: dev
             server: https://kubernetes.default.svc
-            syncPolicy: automated
           - env: staging
             server: https://192.168.49.3:8443
-            syncPolicy: automated
-          - env: prod
-            server: https://192.168.49.4:8443
-            syncPolicy: manual
   template:
     metadata:
       name: "gitops-monitor-{{env}}"
@@ -34,6 +29,6 @@ spec:
       syncPolicy:
         automated:
           prune: true
-          selfHeal: true     # ← Auto Rollback 핵심
+          selfHeal: true
         syncOptions:
           - CreateNamespace=true
