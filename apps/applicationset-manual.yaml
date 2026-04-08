@@ -15,6 +15,7 @@ spec:
       annotations:
         notifications.argoproj.io/subscribe.on-deployed.slack: "#배포-알림"
         notifications.argoproj.io/subscribe.on-sync-failed.slack: "#배포-알림"
+        notifications.argoproj.io/subscribe.on-degraded.slack: "#배포-알림"
     spec:
       project: default
       source:
